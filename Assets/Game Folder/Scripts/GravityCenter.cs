@@ -3,8 +3,8 @@
 public class GravityCenter : MonoBehaviour
 {
     public float pullSpeed = 5f;      // merkeze çekilme hızı
-    public float steeringForce = 10f; // yön düzeltme gücü
-    public float maxDistance = 20f;
+    public float steeringForce = 2f; // yön düzeltme gücü
+    public float maxDistance = 5f;
 
     private void FixedUpdate()
     {
@@ -14,6 +14,10 @@ public class GravityCenter : MonoBehaviour
         {
             Rigidbody rb = col.attachedRigidbody;
             if (rb == null || !rb.CompareTag("Fruit")) continue;
+
+            if (!rb.TryGetComponent<Throwable>(out var obj)) continue;
+
+            if (!obj.gravityEnabled) continue;
 
             Vector3 dir = transform.position - rb.position;
 
@@ -29,7 +33,7 @@ public class GravityCenter : MonoBehaviour
 
             Vector3 targetVelocity = targetDir * pullSpeed;
 
-            Vector3 steering = (targetVelocity - velocity);
+            Vector3 steering = (targetVelocity - velocity) * 0.3f;
 
             rb.AddForce(steering * steeringForce, ForceMode.Acceleration);
         }
