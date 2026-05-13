@@ -21,14 +21,13 @@ public class PlayerController : MonoBehaviour
     private bool isDragging;
 
     [Header("Throw Settings")]
-    [SerializeField] private GameObject throwablePrefab;
     [SerializeField] private Transform spawnPoint;
 
     private Throwable currentThrowable;
+
     private List<Rigidbody> activeFruits = new List<Rigidbody>();
-
-
     public static PlayerController Instance { get; private set; }
+
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -65,6 +64,7 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetMouseButtonUp(0))
         {
             isDragging = false;
+
             Throw();
         }
 
@@ -82,7 +82,7 @@ public class PlayerController : MonoBehaviour
         targetSpeed = Mathf.Clamp(targetSpeed, -maxSpeed, maxSpeed);
 
         // Smooth transition
-        currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, Time.deltaTime * smoothness);
+        currentSpeed = Mathf.Lerp(currentSpeed,targetSpeed,Time.deltaTime * smoothness);
 
         // Damping
         if (!isDragging)
@@ -94,21 +94,26 @@ public class PlayerController : MonoBehaviour
     void ApplyRotation()
     {
         float rotation = currentSpeed * Time.fixedDeltaTime;
+
         Quaternion deltaRotation = Quaternion.Euler(0f, rotation, 0f);
+
         platformRb.MoveRotation(platformRb.rotation * deltaRotation);
 
-        throwableContainer.RotateAround(gravityCenter.transform.position, Vector3.up, rotation);
+        throwableContainer.RotateAround(gravityCenter.transform.position,Vector3.up,rotation);
     }
+
     void Throw()
     {
         if (currentThrowable == null) return;
 
         Vector3 dir = GetCenter() - spawnPoint.position;
+
         dir.y = 0f;
+
         dir.Normalize();
 
-
         currentThrowable.enabled = true;
+
         currentThrowable.Launch(dir);
 
         currentThrowable = null;
@@ -118,14 +123,14 @@ public class PlayerController : MonoBehaviour
 
     void SpawnNewThrowable()
     {
-        GameObject obj = Instantiate(throwablePrefab, spawnPoint.position, Quaternion.identity);
-        obj.transform.SetParent(null); // parent'ı kesinlikle kır
+        currentThrowable =
+            ObjectPoolManager.Instance.GetRandomObject(spawnPoint.position,Quaternion.identity);
 
-        if (obj.TryGetComponent<Throwable>(out var throwable))
-        {
-            currentThrowable = throwable;
-            currentThrowable.enabled = false;
-        }
+        if (currentThrowable == null) return;
+
+        currentThrowable.transform.SetParent(null);
+
+        currentThrowable.enabled = false;
     }
 
     public void RegisterFruit(Rigidbody rb)
