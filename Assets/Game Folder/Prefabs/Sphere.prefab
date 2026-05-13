@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c212877a9c6df949b87ae314457e60c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  throwableData: {fileID: 11400000, guid: ca695820c9ba68f4091d1607122ccb7a, type: 2}
   gravityEnabled: 0
   isLaunched: 0
   moveSpeed: 15

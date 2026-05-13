@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Throwable : MonoBehaviour
 {
+    [SerializeField] protected ThrowableData throwableData;
+
     public bool gravityEnabled = false;
     public bool isLaunched = false;
 
