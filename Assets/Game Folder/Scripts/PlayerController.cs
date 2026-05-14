@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     [Header("References")]
-    public Rigidbody platformRb;
+    [SerializeField] private Transform orbitRoot;
     [SerializeField] private Transform throwableContainer;
-    public GameObject gravityCenter;
+    [SerializeField] private Transform gravityCenter;
 
     [Header("Rotation Settings")]
     public float sensitivity = 10f;
@@ -22,12 +23,13 @@ public class PlayerController : MonoBehaviour
 
     [Header("Throw Settings")]
     [SerializeField] private Transform spawnPoint;
+    [SerializeField] private float throwCooldown = 0.5f;
+    private bool canThrow = true;
+
 
     private Throwable currentThrowable;
-
     private List<Rigidbody> activeFruits = new List<Rigidbody>();
     public static PlayerController Instance { get; private set; }
-
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -38,7 +40,6 @@ public class PlayerController : MonoBehaviour
 
         Instance = this;
     }
-
     void Start()
     {
         SpawnNewThrowable();
@@ -47,10 +48,6 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         HandleInput();
-    }
-
-    void FixedUpdate()
-    {
         ApplyRotation();
     }
 
@@ -93,18 +90,16 @@ public class PlayerController : MonoBehaviour
 
     void ApplyRotation()
     {
-        float rotation = currentSpeed * Time.fixedDeltaTime;
+        float rotation = currentSpeed * Time.deltaTime;
 
-        Quaternion deltaRotation = Quaternion.Euler(0f, rotation, 0f);
-
-        platformRb.MoveRotation(platformRb.rotation * deltaRotation);
-
-        throwableContainer.RotateAround(gravityCenter.transform.position,Vector3.up,rotation);
+        orbitRoot.Rotate(0f, rotation, 0f, Space.World);
     }
 
     void Throw()
     {
-        if (currentThrowable == null) return;
+        if (currentThrowable == null || !canThrow) return;
+
+        canThrow = false;
 
         Vector3 dir = GetCenter() - spawnPoint.position;
 
@@ -119,12 +114,13 @@ public class PlayerController : MonoBehaviour
         currentThrowable = null;
 
         SpawnNewThrowable();
+
+        StartCoroutine(ThrowCooldownRoutine());
     }
 
     void SpawnNewThrowable()
     {
-        currentThrowable =
-            ObjectPoolManager.Instance.GetRandomObject(spawnPoint.position,Quaternion.identity);
+        currentThrowable = ObjectPoolManager.Instance.GetRandomObject(spawnPoint.position,Quaternion.identity);
 
         if (currentThrowable == null) return;
 
@@ -143,8 +139,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    IEnumerator ThrowCooldownRoutine()
+    {
+        yield return new WaitForSeconds(throwCooldown);
+
+        canThrow = true;
+    }
     public Vector3 GetCenter()
     {
-        return gravityCenter.transform.position;
+        return gravityCenter.position;
     }
 }
