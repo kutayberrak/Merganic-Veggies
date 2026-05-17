@@ -1,41 +1,35 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class GravityCenter : MonoBehaviour
 {
-    public float pullSpeed = 5f;      // merkeze çekilme hızı
-    public float steeringForce = 2f; // yön düzeltme gücü
-    public float maxDistance = 5f;
+    [Header("Pull Settings")]
+    public float pullSpeed = 5f;
+    public float steeringForce = 5f;
+    public float stopDistance = 0.05f;
 
     private void FixedUpdate()
     {
-        Collider[] cols = Physics.OverlapSphere(transform.position, maxDistance);
+        List<Rigidbody> fruits = FruitRegistry.Instance.ActiveFruits;
 
-        foreach (var col in cols)
+        for (int i = 0; i < fruits.Count; i++)
         {
-            Rigidbody rb = col.attachedRigidbody;
-            if (rb == null || !rb.CompareTag("Fruit")) continue;
-
-            if (!rb.TryGetComponent<Throwable>(out var obj)) continue;
-
-            if (!obj.gravityEnabled) continue;
+            Rigidbody rb = fruits[i];
+            if (rb == null) continue;
 
             Vector3 dir = transform.position - rb.position;
-
-            // sadece XZ düzleminde
             dir.y = 0f;
 
             float dist = dir.magnitude;
-            if (dist < 0.05f) continue;
+            if (dist < stopDistance) continue;
 
-            Vector3 targetDir = dir.normalized;
+            Vector3 targetVelocity = dir.normalized * pullSpeed;
 
-            Vector3 velocity = rb.linearVelocity;
+            Vector3 currentVel = rb.linearVelocity;
+            currentVel.y = 0f;
 
-            Vector3 targetVelocity = targetDir * pullSpeed;
-
-            Vector3 steering = (targetVelocity - velocity) * 0.3f;
-
-            rb.AddForce(steering * steeringForce, ForceMode.Acceleration);
+            Vector3 steering = (targetVelocity - currentVel) * steeringForce;
+            rb.AddForce(steering, ForceMode.Acceleration);
         }
     }
 }

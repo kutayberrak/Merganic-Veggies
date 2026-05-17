@@ -17,9 +17,18 @@ public class Throwable : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
-
         col.enabled = false;
     }
+
+    public void Launch(Vector3 direction)
+    {
+        isLaunched = true;
+        gravityEnabled = false;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        col.enabled = true;
+    }
+
     private void FixedUpdate()
     {
         if (!isLaunched || gravityEnabled) return;
@@ -30,27 +39,14 @@ public class Throwable : MonoBehaviour
 
         rb.linearVelocity = toCenter * moveSpeed;
     }
-    public void Launch(Vector3 direction)
-    {
-        isLaunched = true;
-        gravityEnabled = false;
-
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
-
-        col.enabled = true;
-    }
 
     protected virtual void OnCollisionEnter(Collision collision)
     {
         if (!gravityEnabled)
         {
             gravityEnabled = true;
-
-            rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
-
-            PlayerController.Instance.RegisterFruit(rb);
+            FruitRegistry.Instance.Register(rb);
         }
     }
 }
