@@ -3,6 +3,8 @@ using UnityEngine;
 public class Throwable : MonoBehaviour
 {
     [SerializeField] protected ThrowableData throwableData;
+    public ThrowableData Data => throwableData;
+    public Vector3 Position => rb.position;
 
     public bool gravityEnabled = false;
     public bool isLaunched = false;
@@ -10,7 +12,7 @@ public class Throwable : MonoBehaviour
     [Header("Move Settings")]
     public float moveSpeed = 15f;
 
-    private Rigidbody rb;
+    protected Rigidbody rb;
     private Collider col;
 
     protected virtual void Awake()
@@ -49,4 +51,32 @@ public class Throwable : MonoBehaviour
             FruitRegistry.Instance.Register(rb);
         }
     }
+    public virtual void ResetForSpawn()
+    {
+        isLaunched = false;
+        gravityEnabled = false;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        col.enabled = false;
+    }
+    public virtual void ResetForPool()
+    {
+        isLaunched = false;
+        gravityEnabled = false;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        col.enabled = false;
+        FruitRegistry.Instance.Unregister(rb);
+    }
+    public void ActivateAsLanded()
+    {
+        isLaunched = true;
+        gravityEnabled = true;
+        col.enabled = true;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        FruitRegistry.Instance.Register(rb);
+    }
+
+    protected virtual void Merge(Throwable other) { }
 }

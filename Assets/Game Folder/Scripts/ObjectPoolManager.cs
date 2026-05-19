@@ -8,12 +8,15 @@ public class ObjectPoolManager : MonoBehaviour
     [Header("Pool Settings")]
     [SerializeField] private List<Throwable> throwablePrefabs;
 
-    [SerializeField] private int poolSizePerPrefab = 15;
+    [SerializeField] private int poolSizePerPrefab = 10;
 
     private Transform pooledObjectsParent;
 
     private Dictionary<Throwable, Queue<Throwable>> pools =
         new Dictionary<Throwable, Queue<Throwable>>();
+
+    private Dictionary<int, Throwable> prefabByTier =
+    new Dictionary<int, Throwable>();
 
     private void Awake()
     {
@@ -50,6 +53,10 @@ public class ObjectPoolManager : MonoBehaviour
             }
 
             pools.Add(prefab, pool);
+
+            // Tier - prefab mapping
+            if (prefab.Data != null)
+                prefabByTier[prefab.Data.tier] = prefab;
         }
     }
     public Throwable GetRandomObject(Vector3 position, Quaternion rotation)
@@ -85,13 +92,9 @@ public class ObjectPoolManager : MonoBehaviour
         Throwable obj = pool.Dequeue();
 
         obj.transform.SetPositionAndRotation(position, rotation);
-
-        obj.gameObject.SetActive(true);
-        /*
         obj.ResetForSpawn();
+        obj.gameObject.SetActive(true);
 
-        obj.SetOriginalPrefab(prefab);
-        */
         return obj;
     }
     void ExpandPool(Throwable prefab)
@@ -107,14 +110,25 @@ public class ObjectPoolManager : MonoBehaviour
         Debug.Log($"Expanded pool: {prefab.name}");
     }
 
+    public Throwable GetByTier(int tier, Vector3 position, Quaternion rotation)
+    {
+        if (!prefabByTier.TryGetValue(tier, out Throwable prefab))
+            return null;
+
+        return GetObject(prefab, position, rotation);
+    }
+
     public void ReturnObject(Throwable obj)
-    { /*
+    {
+        if (obj == null) return;
+
         obj.ResetForPool();
-
         obj.transform.SetParent(pooledObjectsParent);
-
         obj.gameObject.SetActive(false);
 
-        pools[obj.OriginalPrefab].Enqueue(obj)*/
+        if (obj.Data != null && prefabByTier.TryGetValue(obj.Data.tier, out Throwable prefab))
+            pools[prefab].Enqueue(obj);
+        else
+            Debug.LogWarning($"ReturnObject: tier bulunamadı — {obj.name}");
     }
 }

@@ -94,7 +94,7 @@ public class PlayerController : MonoBehaviour
     {
         currentThrowable = ObjectPoolManager.Instance.GetRandomObject(spawnPoint.position, Quaternion.identity);
         if (currentThrowable == null) return;
-        currentThrowable.transform.SetParent(null);
+        //currentThrowable.transform.SetParent(null);
         currentThrowable.enabled = false;
     }
 
