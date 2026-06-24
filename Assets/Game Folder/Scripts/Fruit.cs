@@ -7,17 +7,19 @@ public class Fruit : Throwable
 
     protected override void OnCollisionEnter(Collision collision)
     {
-        bool wasLanded = gravityEnabled;
-
+        // Landing (platforma/yerleşmiş objeye değme) kontrolü ayrı kalsın
         base.OnCollisionEnter(collision);
 
-        if (!wasLanded) return;
+        if (hasMerged) return;
         if (!collision.gameObject.TryGetComponent<Fruit>(out var other)) return;
-        if (!other.gravityEnabled) return;
+        if (other.hasMerged) return;
         if (other.throwableData.tier != throwableData.tier) return;
 
-        // HigherID starts the merge
+        // Sadece büyük ID'li olan merge'i başlatır — çift tetiklenmeyi engeller
         if (GetInstanceID() < other.GetInstanceID()) return;
+
+        hasMerged = true;
+        other.hasMerged = true;
 
         Merge(other);
     }

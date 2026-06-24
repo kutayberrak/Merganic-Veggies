@@ -357,11 +357,11 @@ MonoBehaviour:
   platformRotator: {fileID: 987390829}
   gravityCenter: {fileID: 1336035318}
   spawnPoint: {fileID: 1887306269}
-  sensitivity: 10
-  maxSpeed: 180
+  sensitivity: 30
+  maxSpeed: 540
   smoothness: 10
   damping: 0.95
-  throwCooldown: 0.25
+  throwCooldown: 0.35
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -840,6 +840,22 @@ PrefabInstance:
     - target: {fileID: 5433572269308897652, guid: 889a9a47afba6d84ea100fa97edfe4b0, type: 3}
       propertyPath: m_Name
       value: platform
+      objectReference: {fileID: 0}
+    - target: {fileID: 5433572269308897652, guid: 889a9a47afba6d84ea100fa97edfe4b0, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5717149693527676808, guid: 889a9a47afba6d84ea100fa97edfe4b0, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985124319670374069, guid: 889a9a47afba6d84ea100fa97edfe4b0, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6172487235391371431, guid: 889a9a47afba6d84ea100fa97edfe4b0, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7268033768370424483, guid: 889a9a47afba6d84ea100fa97edfe4b0, type: 3}
       propertyPath: m_LocalScale.x

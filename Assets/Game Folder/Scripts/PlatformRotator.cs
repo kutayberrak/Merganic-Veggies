@@ -30,6 +30,9 @@ public class PlatformRotator : MonoBehaviour
             Vector3 newPos = pivot + (deltaRot * (rb.position - pivot));
             rb.MovePosition(newPos);
             rb.MoveRotation(rb.rotation * deltaRot);
+
+            rb.linearVelocity = deltaRot * rb.linearVelocity;
+            rb.angularVelocity = deltaRot * rb.angularVelocity;
         }
     }
 }

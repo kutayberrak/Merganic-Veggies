@@ -129,6 +129,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   throwableData: {fileID: 11400000, guid: 42efaae8750050f4fae4387912f25bf3, type: 2}
+  platformLayer:
+    serializedVersion: 2
+    m_Bits: 1024
   gravityEnabled: 0
   isLaunched: 0
   moveSpeed: 10

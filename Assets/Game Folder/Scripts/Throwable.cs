@@ -3,6 +3,7 @@ using UnityEngine;
 public class Throwable : MonoBehaviour
 {
     [SerializeField] protected ThrowableData throwableData;
+    [SerializeField] protected LayerMask platformLayer;
     public ThrowableData Data => throwableData;
     public Vector3 Position => rb.position;
 
@@ -14,6 +15,8 @@ public class Throwable : MonoBehaviour
 
     protected Rigidbody rb;
     private Collider col;
+
+    protected bool hasMerged = false;
 
     protected virtual void Awake()
     {
@@ -44,30 +47,48 @@ public class Throwable : MonoBehaviour
 
     protected virtual void OnCollisionEnter(Collision collision)
     {
-        if (!gravityEnabled)
-        {
-            gravityEnabled = true;
-            rb.angularVelocity = Vector3.zero;
-            FruitRegistry.Instance.Register(rb);
-        }
+        if (gravityEnabled) return;
+
+        if (!IsLandingSurface(collision.gameObject)) return;
+
+        gravityEnabled = true;
+        rb.angularVelocity = Vector3.zero;
+        FruitRegistry.Instance.Register(rb);
     }
+
+    // Platforma çarpınca VEYA zaten yerleşmiş bir objeye çarpınca "yerleşmiş" sayılır
+    private bool IsLandingSurface(GameObject other)
+    {
+        int otherLayer = other.layer;
+        if (((1 << otherLayer) & platformLayer.value) != 0) return true;
+
+        if (other.TryGetComponent<Throwable>(out var otherThrowable))
+            return otherThrowable.gravityEnabled;
+
+        return false;
+    }
+
     public virtual void ResetForSpawn()
     {
         isLaunched = false;
         gravityEnabled = false;
+        hasMerged = false;
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         col.enabled = false;
     }
+
     public virtual void ResetForPool()
     {
         isLaunched = false;
         gravityEnabled = false;
+        hasMerged = false;
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         col.enabled = false;
         FruitRegistry.Instance.Unregister(rb);
     }
+
     public void ActivateAsLanded()
     {
         isLaunched = true;
