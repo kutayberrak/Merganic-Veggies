@@ -7,10 +7,10 @@ public class Fruit : Throwable
 
     protected override void OnCollisionEnter(Collision collision)
     {
-        // Landing (platforma/yerleşmiş objeye değme) kontrolü ayrı kalsın
+        if (hasMerged) return;
+
         base.OnCollisionEnter(collision);
 
-        if (hasMerged) return;
         if (!collision.gameObject.TryGetComponent<Fruit>(out var other)) return;
         if (other.hasMerged) return;
         if (other.throwableData.tier != throwableData.tier) return;

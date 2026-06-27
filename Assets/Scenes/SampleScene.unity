@@ -356,6 +356,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   platformRotator: {fileID: 987390829}
   gravityCenter: {fileID: 1336035318}
+  orbitRoot: {fileID: 1529687803}
   spawnPoint: {fileID: 1887306269}
   sensitivity: 30
   maxSpeed: 540
@@ -617,7 +618,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   orbitRoot: {fileID: 1529687803}
-  gravityCenter: {fileID: 1336035318}
 --- !u!1 &1272854883
 GameObject:
   m_ObjectHideFlags: 0

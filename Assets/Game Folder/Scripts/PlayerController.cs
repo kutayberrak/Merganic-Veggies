@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     [SerializeField] private PlatformRotator platformRotator;
     [SerializeField] private Transform gravityCenter;
+    [SerializeField] private Transform orbitRoot;
     [SerializeField] private Transform spawnPoint;
 
     [Header("Rotation Settings")]
@@ -94,7 +95,7 @@ public class PlayerController : MonoBehaviour
     {
         currentThrowable = ObjectPoolManager.Instance.GetRandomObject(spawnPoint.position, Quaternion.identity);
         if (currentThrowable == null) return;
-        //currentThrowable.transform.SetParent(null);
+
         currentThrowable.enabled = false;
     }
 
@@ -105,4 +106,5 @@ public class PlayerController : MonoBehaviour
     }
 
     public Vector3 GetCenter() => gravityCenter.position;
+    public Transform OrbitRoot => orbitRoot;
 }

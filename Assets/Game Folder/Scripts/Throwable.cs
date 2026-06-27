@@ -47,13 +47,20 @@ public class Throwable : MonoBehaviour
 
     protected virtual void OnCollisionEnter(Collision collision)
     {
+        if (!gameObject.activeInHierarchy) return;
+
         if (gravityEnabled) return;
 
         if (!IsLandingSurface(collision.gameObject)) return;
 
         gravityEnabled = true;
         rb.angularVelocity = Vector3.zero;
+        AttachToOrbitRoot();
         FruitRegistry.Instance.Register(rb);
+    }
+    private void AttachToOrbitRoot()
+    {
+        transform.SetParent(PlayerController.Instance.OrbitRoot, true);
     }
 
     // Platforma çarpınca VEYA zaten yerleşmiş bir objeye çarpınca "yerleşmiş" sayılır
@@ -75,6 +82,7 @@ public class Throwable : MonoBehaviour
         hasMerged = false;
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+        rb.detectCollisions = true;
         col.enabled = false;
     }
 
@@ -85,6 +93,7 @@ public class Throwable : MonoBehaviour
         hasMerged = false;
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+        rb.detectCollisions = false;
         col.enabled = false;
         FruitRegistry.Instance.Unregister(rb);
     }
@@ -93,6 +102,7 @@ public class Throwable : MonoBehaviour
     {
         isLaunched = true;
         gravityEnabled = true;
+        AttachToOrbitRoot();
         col.enabled = true;
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
