@@ -26,8 +26,8 @@ public class Fruit : Throwable
 
     protected override void Merge(Throwable other)
     {
-        int nextTier = throwableData.tier + 1;
-        int mergeScore = throwableData.score;
+        int sourceTier = throwableData.tier;
+        int nextTier = sourceTier + 1;
         Vector3 mergePosition = (rb.position + other.Position) / 2f;
 
         ObjectPoolManager.Instance.ReturnObject(this);
@@ -36,6 +36,6 @@ public class Fruit : Throwable
         Throwable merged = ObjectPoolManager.Instance.GetByTier(nextTier, mergePosition, Quaternion.identity);
         merged?.ActivateAsLanded();
 
-        OnMerge?.Invoke(mergeScore);
+        OnMerge?.Invoke(sourceTier);
     }
 }
