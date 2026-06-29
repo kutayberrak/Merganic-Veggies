@@ -94,6 +94,7 @@ public class Throwable : MonoBehaviour
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         rb.detectCollisions = false;
+        BoundaryWatcher.Instance?.RemoveThrowable(this);
         col.enabled = false;
         FruitRegistry.Instance.Unregister(rb);
     }

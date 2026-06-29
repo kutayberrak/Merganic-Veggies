@@ -135,6 +135,17 @@ public class BoundaryWatcher : MonoBehaviour
         runningTimers.Clear();
         contactCounts.Clear();
     }
+    public void RemoveThrowable(Throwable throwable)
+    {
+        if (contactCounts.Remove(throwable))
+        {
+            if (runningTimers.TryGetValue(throwable, out Coroutine timer))
+            {
+                StopCoroutine(timer);
+                runningTimers.Remove(throwable);
+            }
+        }
+    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
