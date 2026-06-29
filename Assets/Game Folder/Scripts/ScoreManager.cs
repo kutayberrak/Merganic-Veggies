@@ -68,4 +68,17 @@ public class ScoreManager : MonoBehaviour
         OnScoreChanged?.Invoke(CurrentScore);
         OnComboChanged?.Invoke(ComboCount, ComboMultiplier);
     }
+
+    public void ResetScore()
+    {
+        CurrentScore = 0;
+        ComboCount = 0;
+        ComboMultiplier = 1f;
+        lastMergeTime = -999f;
+
+        SaveManager.SaveScore(CurrentScore);
+
+        OnScoreChanged?.Invoke(CurrentScore);
+        OnComboChanged?.Invoke(ComboCount, ComboMultiplier);
+    }
 }
