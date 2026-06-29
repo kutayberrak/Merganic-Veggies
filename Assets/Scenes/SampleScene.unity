@@ -2567,9 +2567,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f76777f4d5c99c84d960bf3b258b41cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pullSpeed: 3
+  pullSpeed: 2
+  falloffRadius: 1.5
   steeringForce: 1
-  stopDistance: 0.05
+  maxSpeed: 3
+  baseDamping: 0.5
+  settledDamping: 2
 --- !u!4 &1336035318
 Transform:
   m_ObjectHideFlags: 0
@@ -3201,7 +3204,7 @@ Transform:
   m_GameObject: {fileID: 1887306268}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -4.5}
+  m_LocalPosition: {x: 0, y: -0.05, z: -4.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
