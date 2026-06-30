@@ -8,6 +8,7 @@ public class ScoreUI : MonoBehaviour
     private void OnEnable()
     {
         ScoreManager.OnScoreChanged += UpdateScoreText;
+        UpdateScoreText(ScoreManager.Instance.CurrentScore);
     }
 
     private void OnDisable()

@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public bool IsPaused { get; private set; }
 
     public static event Action OnGameOver;
+    public static event Action OnWin;
     public static event Action OnPause;
     public static event Action OnResume;
 
@@ -24,25 +25,30 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        BoundaryWatcher.OnBoundaryExceeded += HandleBoundaryExceeded;
+        BoundaryWatcher.OnBoundaryExceeded += TriggerLose;
     }
 
     private void OnDisable()
     {
-        BoundaryWatcher.OnBoundaryExceeded -= HandleBoundaryExceeded;
+        BoundaryWatcher.OnBoundaryExceeded -= TriggerLose;
     }
 
-    // Sınır aşıldığında çağrılır — oyun ANINDA donmaz, sadece durum işaretlenir.
-    // Donma işlemi UI gösterildiğinde Pause() çağrılarak yapılmalı.
-    private void HandleBoundaryExceeded()
+    private void TriggerLose()
     {
         if (IsGameOver) return;
 
         IsGameOver = true;
         OnGameOver?.Invoke();
+        Pause();
+    }
 
-        // Test
-        RestartGame();
+    public void TriggerWin()
+    {
+        if (IsGameOver) return;
+
+        IsGameOver = true;
+        OnWin?.Invoke();
+        Pause();
     }
 
     public void Pause()
